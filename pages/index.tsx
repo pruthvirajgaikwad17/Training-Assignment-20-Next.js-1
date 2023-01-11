@@ -1,0 +1,60 @@
+import Link from "next/link";
+import styles from "../styles/Content.module.css";
+
+type prodType = {
+  id: number;
+  title: string;
+  price: number;
+  description: string;
+  category: String;
+  image: string;
+  rating: { rate: number; count: number };
+};
+
+type propsType = {
+  data: prodType[];
+};
+
+/*
+
+
+
+*/
+
+export default function Home(props: propsType) {
+  console.log(props.data);
+  const prodData = props.data;
+  return (
+    <>
+      <div className={styles.container}>
+        <h1 className={styles.storeHeading}>Store</h1>
+        {prodData.map((prod) => {
+          return (
+            <Link href={`${prod.id}`} key={`${prod.id}`}>
+              <div className={styles.content}>
+                <img
+                  src={prod.image}
+                  alt="this is alternative"
+                  width="200"
+                  height="200"
+                />
+                <h4>{prod.title}</h4>
+                <p>Price - {prod.price}</p>
+                <p>category - {prod.category}</p>
+              </div>
+            </Link>
+          );
+        })}
+      </div>
+    </>
+  );
+}
+
+export async function getStaticProps(context: any) {
+  const response = await fetch("https://fakestoreapi.com/products");
+  let data = await response.json();
+  data = data.slice(0, 10);
+  return {
+    props: { data }, // will be passed to the page component as props
+  };
+}
